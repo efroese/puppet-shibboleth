@@ -1,18 +1,24 @@
 /*
 
-== Class: shibboleth::sp
+= Class: shibboleth::sp
 
 Installs shibboleth's service provider, and allow it's apache module get loaded
 with apache::module.
 
-Requires:
+== Parameters
+$shibboleth2_xml_template:: the template apth for your shibboleth2.xml.erb (optional)
+$shibboleth2_xml_template:: the template apth for your shibboleth2.xml.erb (optional)
+
+== Requires:
 - Class[apache]
 
-Limitations:
+== Limitations:
 - currently RedHat/CentOS only.
 
 */
-class shibboleth::sp {
+class shibboleth::sp (
+    $shibboleth2_xml_template=undef
+    ) {
 
   yumrepo { "security_shibboleth":
     descr    => "Shibboleth-RHEL_${lsbmajdistrelease}",
@@ -57,6 +63,15 @@ class shibboleth::sp {
     ensure  => absent,
     require => Package["shibboleth"],
     notify  => Service["apache"],
+  }
+
+  if $shibboleth2_xml_template != undef {
+    file { "/etc/shibboleth/shibboleth2.xml":
+      ensure  => present,
+      require => Package["shibboleth"],
+      notify  => Service["apache"],
+      content => template($shibboleth2_xml_template),
+    }
   }
 
 # TODO
