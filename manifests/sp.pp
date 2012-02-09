@@ -33,9 +33,8 @@ class shibboleth::sp {
   }
 
   exec { "download shibboleth repo key":
-    command => "curl -s http://download.opensuse.org/repositories/security:/shibboleth/RHEL_5/repodata/repomd.xml.key -o /etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
+    command => "curl -s http://download.opensuse.org/repositories/security:/shibboleth/RHEL_${lsbmajdistrelease}/repodata/repomd.xml.key -o /etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
     creates => "/etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
-    require => File["/etc/pki/rpm-gpg/"],
   }
 
   package { "shibboleth":
