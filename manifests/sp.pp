@@ -6,8 +6,10 @@ Installs shibboleth's service provider, and allow it's apache module get loaded
 with apache::module.
 
 == Parameters
-$shibboleth2_xml_template:: the template apth for your shibboleth2.xml.erb (optional)
-$shibboleth2_xml_template:: the template apth for your shibboleth2.xml.erb (optional)
+$shibboleth2_xml_template:: the template path for your shibboleth2.xml.erb (optional)
+$attribute_map_xml_template:: the template path for your attribute-map.xml.erb (optional)
+$sp_cert:: the path to your sp-cert.pem (optional)
+$sp_key:: the path to your sp-key.pem (optional)
 
 == Requires:
 - Class[apache]
@@ -17,7 +19,10 @@ $shibboleth2_xml_template:: the template apth for your shibboleth2.xml.erb (opti
 
 */
 class shibboleth::sp (
-    $shibboleth2_xml_template=undef
+    $shibboleth2_xml_template=undef,
+    $attribute_map_xml_template=undef,
+    $sp_cert=undef,
+    $sp_key=undef
     ) {
 
   yumrepo { "security_shibboleth":
@@ -68,9 +73,39 @@ class shibboleth::sp (
   if $shibboleth2_xml_template != undef {
     file { "/etc/shibboleth/shibboleth2.xml":
       ensure  => present,
+      mode    => 0644,
       require => Package["shibboleth"],
       notify  => Service["apache"],
       content => template($shibboleth2_xml_template),
+    }
+  }
+  if $attribute_map_xml_template != undef {
+    file { "/etc/shibboleth/attribute-map.xml":
+      ensure  => present,
+      mode    => 0644,
+      require => Package["shibboleth"],
+      notify  => Service["apache"],
+      content => template($attribute_map_xml_template),
+    }
+  }
+  
+  if $sp_cert_template != undef {
+    file { "/etc/shibboleth/sp-cert.pem":
+      ensure  => present,
+      mode    => 0644,
+      require => Package["shibboleth"],
+      notify  => Service["apache"],
+      content => sp_cert,
+    }
+  }
+  
+  if $sp_key_template != undef {
+    file { "/etc/shibboleth/sp-key.pem":
+      ensure  => present,
+      mode    => 0600,
+      require => Package["shibboleth"],
+      notify  => Service["apache"],
+      source  => $sp_key,
     }
   }
 
