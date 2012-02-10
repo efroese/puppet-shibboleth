@@ -25,9 +25,14 @@ class shibboleth::sp (
     $sp_key=undef
     ) {
 
+  $release = $operatingsystem ? {
+    /CentOS|RedHat/ => $lsbmajdistrelease,
+    /Amazon|Linux/ => '6'
+  }
+
   yumrepo { "security_shibboleth":
-    descr    => "Shibboleth-RHEL_${lsbmajdistrelease}",
-    baseurl  => "http://download.opensuse.org/repositories/security://shibboleth/RHEL_${lsbmajdistrelease}",
+    descr    => "Shibboleth-RHEL_${release}",
+    baseurl  => "http://download.opensuse.org/repositories/security://shibboleth/RHEL_${release}",
     gpgkey   => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
     enabled  => 1,
     gpgcheck => 1,
@@ -44,7 +49,7 @@ class shibboleth::sp (
   }
 
   exec { "download shibboleth repo key":
-    command => "curl -s http://download.opensuse.org/repositories/security:/shibboleth/RHEL_${lsbmajdistrelease}/repodata/repomd.xml.key -o /etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
+    command => "curl -s http://download.opensuse.org/repositories/security:/shibboleth/RHEL_${release}/repodata/repomd.xml.key -o /etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
     creates => "/etc/pki/rpm-gpg/RPM-GPG-KEY-shibboleth",
   }
 
