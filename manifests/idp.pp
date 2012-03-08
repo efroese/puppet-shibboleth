@@ -19,27 +19,13 @@ Requires:
 - Tomcat
 
 */
-class shibboleth::idp {
-
-  if ( ! $shibidp_ver ) {
-    $shibidp_ver = "2.1.5"
-  }
-
-  if ( ! $shibidp_home ) {
-    $shibidp_home = "/opt/shibboleth-idp-${shibidp_ver}"
-  }
-
-  if ( ! $shibidp_hostname ) {
-    $shibidp_hostname = "localhost"
-  }
-
-  if ( ! $shibidp_keypass ) {
-    fail("missing mandatory attribute: \$shibidp_keypass.")
-  }
-
-  if ( ! $shibidp_javahome ) {
+class shibboleth::idp (
+    $shibidp_ver = '2.1.5',
+    $shibidp_home = "/opt/shibboleth-idp-${2.1.5}",
+    $shibidp_hostname = 'localhost',
+    $shibidp_keypass,
     $shibidp_javahome = "/usr"
-  }
+    ) {
 
   $mirror = "http://shibboleth.internet2.edu/downloads/shibboleth/idp"
   $url = "${mirror}/${shibidp_ver}/shibboleth-identityprovider-${shibidp_ver}-bin.zip"
